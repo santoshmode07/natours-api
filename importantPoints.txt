@@ -18,3 +18,16 @@ Instead of this:-
         ref: 'Review',
       },
     ],
+
+Use this:
+
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
+
+
+
+3)Use this when you are combining different routes and have to access the param fields in different route
+express.Routerr({mergeParams:true});
