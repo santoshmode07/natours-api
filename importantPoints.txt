@@ -1,5 +1,20 @@
-//This populate is used to embedd the data 
+This populate is used to embedd the data without actually existing in the database
 .populate({
     path: 'guides',
     select: '-__v -passwordChangedAt',
   });
+
+2) We can get access to all the reviews for a certain tour,but without keeping this array of ID's on the tour.
+So, think of 'Virtual Populate' like a way
+of keeping that array of review ID's on a tour,
+but without actually persisting it to the database.
+And so that then solves the problem that we have
+with child referencing
+
+Instead of this:-
+ reviews: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Review',
+      },
+    ],
