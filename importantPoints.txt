@@ -37,3 +37,6 @@ express.Routerr({mergeParams:true});
 4) For implictly loading the data in Loading file and be make sure to comment out the functions in middleware('save') of specific User model and fter that remove the comments
 
    await User.create(users, { validateBeforeSave: false });
+
+
+   5)To increase the perfomance we have to add more indexes in the database
