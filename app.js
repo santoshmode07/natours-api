@@ -41,7 +41,12 @@ app.use(
       defaultSrc: ["'self'"],
       baseUri: ["'self'"],
       fontSrc: ["'self'", 'https:', 'data:'],
-      scriptSrc: ["'self'", 'https://unpkg.com', 'https://cdn.jsdelivr.net'],
+      scriptSrc: [
+        "'self'",
+        'https://unpkg.com',
+        'https://cdn.jsdelivr.net',
+        'https://js.stripe.com',
+      ],
       styleSrc: ["'self'", 'https://unpkg.com', 'https://fonts.googleapis.com'],
       imgSrc: [
         "'self'",
@@ -55,6 +60,7 @@ app.use(
         'https://unpkg.com',
         'https://cdn.jsdelivr.net',
       ],
+      frameSrc: ["'self'", 'https://js.stripe.com'],
       workerSrc: ["'self'", 'blob:'],
     },
   }),
