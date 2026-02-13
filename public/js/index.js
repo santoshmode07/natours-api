@@ -1,10 +1,13 @@
 /* eslint-disable */
 import '@babel/polyfill';
 import { displayMap } from './mapbox';
-import { login, logout } from './login';
+import { login, logout, forgotPassword } from './login';
+import { resetPassword } from './resetPassword';
 import { updateSettings } from './updateSettings';
 // DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
+const forgotPasswordForm = document.querySelector('.form--forgotPassword');
+const resetPasswordForm = document.querySelector('.form--resetPassword');
 
 const mapBox = document.getElementById('map');
 
@@ -54,4 +57,20 @@ if (userPasswordForm)
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';
+  });
+
+if (forgotPasswordForm)
+  forgotPasswordForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    forgotPassword(email);
+  });
+
+if (resetPasswordForm)
+  resetPasswordForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
+    const { token } = document.querySelector('.btn--reset-password').dataset;
+    resetPassword(password, passwordConfirm, token);
   });
