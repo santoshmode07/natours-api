@@ -5,12 +5,14 @@ import { login, logout, forgotPassword, signup } from './login';
 import { resetPassword } from './resetPassword';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
+import { createReview } from './review';
 
 // DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
 const signupForm = document.querySelector('.form--signup');
 const forgotPasswordForm = document.querySelector('.form--forgotPassword');
 const resetPasswordForm = document.querySelector('.form--resetPassword');
+const reviewForm = document.querySelector('.form--review');
 
 const mapBox = document.getElementById('map');
 
@@ -95,4 +97,13 @@ if (bookBtn)
     e.target.textContent = 'Processing...';
     const { tourId } = e.target.dataset;
     bookTour(tourId);
+  });
+
+if (reviewForm)
+  reviewForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const tour = document.querySelector('.btn--save-review').dataset.tourId;
+    const rating = document.getElementById('rating').value;
+    const review = document.getElementById('review').value;
+    createReview(tour, rating, review);
   });

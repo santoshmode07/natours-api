@@ -3,6 +3,7 @@ const catchAsync = require('../Utils/catchAsync');
 const AppError = require('../Utils/appError');
 const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
+const Review = require('../models/reviewModel');
 
 exports.getOverview = catchAsync(async (req, res) => {
   //1)Get Tour data from collection
@@ -27,12 +28,23 @@ exports.getTour = catchAsync(async (req, res, next) => {
     return next(new AppError('There is no tour with that name.', 404));
   }
 
+  // Check if user is logged in and has booked this tour
+  let hasBooked = false;
+  if (res.locals.user) {
+    const booking = await Booking.findOne({
+      user: res.locals.user.id,
+      tour: tour.id,
+    });
+    if (booking) hasBooked = true;
+  }
+
   //2)Buid template
 
   //3)Render template using the data from 1)
   res.status(200).render('tour', {
     title: `${tour.name} Tour`,
     tour,
+    hasBooked,
   });
 });
 
@@ -78,6 +90,32 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   res.status(200).render('overview', {
     title: 'My Tours',
     tours,
+  });
+});
+
+exports.getMyReviews = catchAsync(async (req, res, next) => {
+  // 1) Find all reviews by the current user
+  const reviews = await Review.find({ user: req.user.id }).populate({
+    path: 'tour',
+    select: 'name slug imageCover',
+  });
+
+  res.status(200).render('myReviews', {
+    title: 'My Reviews',
+    reviews,
+  });
+});
+
+exports.getReviewForm = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findOne({ slug: req.params.slug });
+
+  if (!tour) {
+    return next(new AppError('There is no tour with that name.', 404));
+  }
+
+  res.status(200).render('reviewForm', {
+    title: `Review ${tour.name}`,
+    tour,
   });
 });
 

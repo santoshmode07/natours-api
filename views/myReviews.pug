@@ -1,0 +1,69 @@
+extends base
+
+include _reviewCard
+
+block content
+    main.main
+        .user-view
+            nav.user-view__menu
+                ul.side-nav
+                    li
+                        a(href='/me')
+                            svg
+                                use(xlink:href='img/icons.svg#icon-settings')
+                            | Settings
+                    li
+                        a(href='/my-tours')
+                            svg
+                                use(xlink:href='img/icons.svg#icon-briefcase')
+                            | My bookings
+                    li.side-nav--active
+                        a(href='/my-reviews')
+                            svg
+                                use(xlink:href='img/icons.svg#icon-star')
+                            | My reviews
+                    li
+                        a(href='#')
+                            svg
+                                use(xlink:href='img/icons.svg#icon-credit-card')
+                            | Billing
+
+                - if (user.role === 'admin')
+                    .admin-nav
+                        h5.admin-nav__heading Admin
+                        ul.side-nav
+                            li
+                                a(href='#')
+                                    svg
+                                        use(xlink:href='img/icons.svg#icon-map')
+                                    | Manage tours
+                            li
+                                a(href='#')
+                                    svg
+                                        use(xlink:href='img/icons.svg#icon-users')
+                                    | Manage users
+                            li
+                                a(href='#')
+                                    svg
+                                        use(xlink:href='img/icons.svg#icon-star')
+                                    | Manage reviews
+                            li
+                                a(href='#')
+                                    svg
+                                        use(xlink:href='img/icons.svg#icon-briefcase')
+                                    | Manage bookings
+
+            .user-view__content
+                .user-view__form-container
+                    h2.heading-secondary.ma-bt-md My Reviews
+                    
+                    if reviews.length === 0
+                        p You haven't written any reviews yet!
+                    else
+                        .reviews-container
+                            each review in reviews
+                                .review-item.ma-bt-lg
+                                    .review-item__tour-info.ma-bt-sm
+                                        img.review-item__tour-img(src=`/img/tours/${review.tour.imageCover}`, alt=`${review.tour.name}`)
+                                        span.review-item__tour-name= review.tour.name
+                                    +reviewCard(review)

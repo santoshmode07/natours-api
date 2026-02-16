@@ -90,6 +90,9 @@ block content
 
 
                 if user
-                    button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
+                    if hasBooked
+                        a.btn.btn--green.span-all-rows(href=`/tour/${tour.slug}/review`) Give Your Review
+                    else
+                        button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
                 else 
                     a.btn.btn--green.span-all-rows(href='/login') Login to book tour
