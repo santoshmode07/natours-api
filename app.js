@@ -33,10 +33,12 @@ app.set('views', path.join(__dirname, 'views'));
 
 // 1) GLOBAL MIDDLEWARES
 
-app.use(cors());
 app.use(
   cors({
-    origin: 'https://natours-api-eight.vercel.app',
+    origin: [
+      'https://natours-api-eight.vercel.app',
+      'https://natours-api-iwxd.onrender.com',
+    ],
     credentials: true,
   }),
 );
@@ -76,7 +78,7 @@ app.use(
         'https://*.tile.openstreetmap.org',
         'https://unpkg.com',
         'https://cdn.jsdelivr.net',
-        'https://natours-api-iwxd.onrender.com',
+        'https://natours-api-eight.vercel.app',
         'https://*.stripe.com',
         'ws://127.0.0.1:*',
       ],

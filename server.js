@@ -12,13 +12,20 @@ dotenv.config({ path: path.join(__dirname, 'config.env') });
 const mongoose = require('mongoose');
 const app = require('./app');
 
+if (!process.env.DATABASE) {
+  console.log('DATABASE environment variable is not set!');
+  process.exit(1);
+}
+
 const DB = process.env.DATABASE.replace(
   '<db_password>',
   process.env.DATABASE_PASSWORD,
 );
 
 mongoose
-  .connect(DB)
+  .connect(DB, {
+    serverSelectionTimeoutMS: 10000, // Timeout after 10 seconds instead of buffering indefinitely
+  })
   .then(() => {
     console.log('DB connection successful!');
   })
