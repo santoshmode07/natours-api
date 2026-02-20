@@ -15,18 +15,22 @@ const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
+const mongoose = require('mongoose');
 
 const AppError = require('./Utils/appError');
+const connectDB = require('./Utils/db');
 const globalErrorHandler = require('./controllers/errorController');
+
+const app = express();
+
+if (process.env.NODE_ENV === 'production') app.enable('trust proxy');
+mongoose.set('bufferCommands', false);
+
 const tourRouter = require('./routes/tourRouter');
 const userRouter = require('./routes/userRouter');
 const reviewRouter = require('./routes/reviewRouter');
 const bookingRouter = require('./routes/bookingRouter');
 const viewRouter = require('./routes/viewRouter');
-
-const app = express();
-
-if (process.env.NODE_ENV === 'production') app.enable('trust proxy');
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -143,6 +147,16 @@ app.use(
 );
 
 app.use(compression());
+
+// Ensure DB connection exists for serverless environments (e.g. Vercel).
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    return next();
+  } catch (err) {
+    return next(new AppError(`Database connection failed: ${err.message}`, 500));
+  }
+});
 
 // Test middleware
 app.use((req, res, next) => {

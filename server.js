@@ -34,7 +34,8 @@ mongoose
     console.log('DB connection successful!');
   })
   .catch((err) => {
-    console.log('DB connection error:', err);
+    console.log('DB connection error:', err.message);
+    process.exit(1);
   });
 
 const port = process.env.PORT || 3000;
