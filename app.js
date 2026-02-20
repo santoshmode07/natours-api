@@ -32,13 +32,23 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // 1) GLOBAL MIDDLEWARES
+const allowedOrigins = [
+  'https://natours-api-iota.vercel.app',
+  'https://natours-api-eight.vercel.app',
+  'https://natours-api-iwxd.onrender.com',
+];
 
 app.use(
   cors({
-    origin: [
-      'https://natours-api-eight.vercel.app',
-      'https://natours-api-iwxd.onrender.com',
-    ],
+    origin(origin, callback) {
+      if (!origin) return callback(null, true);
+
+      const isAllowed =
+        allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin);
+
+      if (isAllowed) return callback(null, true);
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   }),
 );
@@ -78,6 +88,8 @@ app.use(
         'https://*.tile.openstreetmap.org',
         'https://unpkg.com',
         'https://cdn.jsdelivr.net',
+        'https://*.vercel.app',
+        'https://natours-api-iota.vercel.app',
         'https://natours-api-eight.vercel.app',
         'https://*.stripe.com',
         'ws://127.0.0.1:*',
