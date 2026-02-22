@@ -840,7 +840,7 @@ body {
   background-color: #fff;
   max-width: 120rem;
   margin: 0 auto;
-  min-height: 100vh;
+  min-height: 80rem;
   border-radius: 3px;
   overflow: hidden;
   -webkit-box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.07);
@@ -954,6 +954,8 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  flex-wrap: wrap;
+  row-gap: 0.75rem;
   justify-content: flex-end;
 }
 .footer__nav li {
@@ -1497,6 +1499,24 @@ body {
   padding: 2rem;
   border-radius: 3px;
   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.reviews-container {
+  display: grid;
+  gap: 2rem;
+}
+
+.review-item .reviews__card {
+  width: 100%;
+  max-width: 100%;
+  padding: 2.5rem;
+}
+
+.review-item .reviews__text,
+.review-item__tour-name {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .review-item__tour-info {

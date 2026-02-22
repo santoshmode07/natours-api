@@ -5,15 +5,25 @@ const factory = require('./handlerFactory');
 const Booking = require('../models/bookingModel');
 const catchAsync = require('../Utils/catchAsync');
 const Email = require('../Utils/email');
+const AppError = require('../Utils/appError');
+
+const getBaseUrl = (req) => {
+  const forwardedProto = req.get('x-forwarded-proto');
+  const forwardedHost = req.get('x-forwarded-host');
+  const protocol = forwardedProto ? forwardedProto.split(',')[0] : req.protocol;
+  const host = forwardedHost || req.get('host');
+  return `${protocol}://${host}`;
+};
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   //1)Get the Currently booked tour
   const tour = await Tour.findById(req.params.tourId);
+  const baseUrl = getBaseUrl(req);
   //2)Create checkout Session
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    success_url: `${req.protocol}://${req.get('host')}/?tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}`,
-    cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
+    success_url: `${baseUrl}/my-tours?tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}`,
+    cancel_url: `${baseUrl}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
     mode: 'payment',
@@ -43,14 +53,22 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   //This is only TEMPORARY, because it's UNSECURE: everyone can make bookings without paying
   const { tour, user, price } = req.query;
 
-  if (!tour && !user && !price) return next();
-  await Booking.create({ tour, user, price });
+  if (!tour || !user || !price) return next();
+
+  if (req.user && req.user.id !== user) {
+    return next(new AppError('Invalid booking confirmation user.', 400));
+  }
+
+  const existingBooking = await Booking.findOne({ tour, user });
+  if (!existingBooking) {
+    await Booking.create({ tour, user, price });
+  }
 
   // Fetch user manually since req.user is not available on this route
   const currentUser = await User.findById(user);
 
   if (currentUser) {
-    const url = `${req.protocol}://${req.get('host')}/me`;
+    const url = `${getBaseUrl(req)}/my-tours`;
     await new Email(currentUser, url).sendBookingConfirmation();
   }
 
