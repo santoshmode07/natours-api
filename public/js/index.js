@@ -23,6 +23,7 @@ const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 const userPhotoInput = document.getElementById('photo');
 const userPhotoPreview = document.getElementById('user-photo-preview');
+const saveSettingsBtn = document.querySelector('.btn--save-settings');
 
 const bookBtn = document.getElementById('book-tour');
 const sendOtpBtn = document.getElementById('send-otp');
@@ -72,23 +73,32 @@ if (userPhotoInput && userPhotoPreview) {
   userPhotoInput.addEventListener('change', (e) => {
     const [file] = e.target.files;
     if (!file || !file.type.startsWith('image/')) return;
-    userPhotoPreview.src = URL.createObjectURL(file);
-    userPhotoPreview.onload = () => {
-      URL.revokeObjectURL(userPhotoPreview.src);
+    const reader = new FileReader();
+    reader.onload = () => {
+      userPhotoPreview.src = reader.result;
     };
+    reader.readAsDataURL(file);
   });
 }
 
 if (userDataForm)
-  userDataForm.addEventListener('submit', (e) => {
+  userDataForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (saveSettingsBtn) {
+      saveSettingsBtn.textContent = 'Saving...';
+      saveSettingsBtn.disabled = true;
+    }
     const form = new FormData();
     form.append('name', document.getElementById('name').value);
     form.append('email', document.getElementById('email').value);
     const selectedPhoto = userPhotoInput?.files?.[0];
     if (selectedPhoto) form.append('photo', selectedPhoto);
 
-    updateSettings(form, 'data');
+    await updateSettings(form, 'data');
+    if (saveSettingsBtn) {
+      saveSettingsBtn.textContent = 'Save settings';
+      saveSettingsBtn.disabled = false;
+    }
   });
 
 if (userPasswordForm)

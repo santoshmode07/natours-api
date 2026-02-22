@@ -42,6 +42,11 @@ body {
   -ms-flex-direction: column;
   flex-direction: column;
 }
+@media only screen and (max-width: 50em) {
+  body {
+    padding: 0;
+  }
+}
 
 .main {
   background-color: #f7f7f7;
@@ -947,6 +952,8 @@ body {
     grid-template-columns: 1fr;
     grid-row-gap: 1.25rem;
     justify-items: center;
+    text-align: center;
+    padding: 4rem 2rem 2.5rem 2rem;
   }
 }
 .footer__logo {
@@ -973,6 +980,15 @@ body {
 }
 .footer__nav li {
   margin-left: 1.5rem;
+}
+@media only screen and (max-width: 50em) {
+  .footer__nav {
+    justify-content: center;
+    gap: 0.8rem 1.4rem;
+  }
+  .footer__nav li {
+    margin-left: 0;
+  }
 }
 .footer__nav a {
   color: #777;
@@ -1018,7 +1034,7 @@ body {
 }
 @media only screen and (max-width: 62.5em) {
   .nav--tours {
-    margin-bottom: 0;
+    margin-bottom: 1rem;
   }
 }
 @media only screen and (max-width: 37.5em) {
@@ -1027,6 +1043,9 @@ body {
     -ms-flex-order: 2;
     order: 2;
     flex: 0 1 auto;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 0.5rem;
   }
 }
 .nav--user {
@@ -1043,7 +1062,11 @@ body {
     -ms-flex-order: 3;
     order: 3;
     flex: 0 1 auto;
+    width: 100%;
     justify-content: center;
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
   }
 }
 .nav__el,
