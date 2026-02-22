@@ -2,17 +2,19 @@ extends baseEmail
 
 
 block content
-    p Hi #{firstName},
-        p Your tour has been successfully booked! 🎉🙏
-        p We're so excited to have you on this adventure. You can view your bookings by clicking the button below.
-        table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
-            tbody
-                tr
-                    td(align='left')
-                        table(role='presentation', border='0', cellpadding='0', cellspacing='0')
-                            tbody
-                                tr
-                                    td
-                                        a(href=`${url}`, target='_blank') View My Bookings
-        p If you need any help with your booking, please don't hesitate to contact me!
-        p - Santosh Mode 
+    p.lead Hi #{firstName},
+    p Your tour booking has been confirmed successfully.
+    p You can view your bookings, details, and upcoming trips anytime from your account.
+    table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+        tbody
+            tr
+                td(align='left')
+                    table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+                        tbody
+                            tr
+                                td
+                                    a(href=`${url}`, target='_blank') View my bookings
+    p.meta-note Need any changes? Reply to this email and we will help.
+    p.last Regards,
+        br
+        | Santosh and the Natours team
