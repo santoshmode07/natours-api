@@ -89,6 +89,7 @@ app.use(
         'data:',
         'https://*.tile.openstreetmap.org',
         'https://unpkg.com',
+        'https://res.cloudinary.com',
       ],
       connectSrc: [
         "'self'",
