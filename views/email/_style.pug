@@ -11,7 +11,7 @@ style.
     font-size: 15px;
     line-height: 1.6;
     margin: 0;
-    padding: 24px 0;
+    padding: 12px 0;
     -ms-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
     color: #2e3a40;
@@ -54,9 +54,25 @@ style.
   }
   .brand-bar {
     background: linear-gradient(120deg, #7dd56f, #28b487);
-    padding: 24px 28px;
+    padding: 18px 22px;
     color: #ffffff;
     text-align: left;
+  }
+  .brand-table {
+    width: 100%;
+  }
+  .brand-logo-cell {
+    width: 52px;
+    padding-right: 10px;
+    vertical-align: middle;
+  }
+  .brand-copy {
+    vertical-align: middle;
+  }
+  .brand-logo {
+    width: 40px;
+    height: 40px;
+    display: block;
   }
   .brand-title {
     display: inline-block;
@@ -78,7 +94,7 @@ style.
   }
   .wrapper {
     box-sizing: border-box;
-    padding: 30px 28px 24px;
+    padding: 24px 22px 18px;
   }
   h1,
   h2,
@@ -115,6 +131,73 @@ style.
   .meta-note {
     font-size: 13px;
     color: #6e8088;
+  }
+  .mail-panel {
+    border-radius: 12px;
+    border: 1px solid #dbe7e1;
+    padding: 14px 16px;
+    margin: 8px 0 18px;
+    background: #f7fbf9;
+  }
+  .mail-panel--welcome {
+    background: #f3fbf5;
+    border-color: #c7e8d2;
+  }
+  .mail-panel--reset {
+    background: #fff8f2;
+    border-color: #ffd9b2;
+  }
+  .mail-panel--booking {
+    background: #f3f8ff;
+    border-color: #cbdcf8;
+  }
+  .booking-cover {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .booking-grid {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .booking-grid td {
+    padding: 6px 0;
+    border-bottom: 1px solid #dde7ee;
+    font-size: 14px;
+  }
+  .booking-grid tr:last-child td {
+    border-bottom: none;
+  }
+  .booking-key {
+    color: #5f7485;
+    width: 42%;
+    font-weight: 600;
+  }
+  .booking-value {
+    color: #20303a;
+    font-weight: 700;
+  }
+  .mail-panel p {
+    margin-bottom: 8px;
+  }
+  .mail-panel p:last-child {
+    margin-bottom: 0;
+  }
+  .mail-label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    color: #3b5a4b;
+  }
+  .mail-label--reset {
+    color: #8a5a23;
+  }
+  .mail-label--booking {
+    color: #3a557f;
   }
   .otp-code {
     display: inline-block;
@@ -184,20 +267,28 @@ style.
   }
   @media only screen and (max-width: 620px) {
     body {
-      padding: 10px 0;
+      padding: 0;
     }
     .container {
       padding: 0 10px;
       width: 100% !important;
     }
     .brand-bar {
-      padding: 20px 18px;
+      padding: 14px 14px;
+    }
+    .brand-logo-cell {
+      width: 44px;
+      padding-right: 8px;
+    }
+    .brand-logo {
+      width: 34px;
+      height: 34px;
     }
     .brand-heading {
       font-size: 20px;
     }
     .wrapper {
-      padding: 24px 18px 18px;
+      padding: 18px 14px 14px;
     }
     p,
     .meta-note,

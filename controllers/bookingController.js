@@ -15,6 +15,12 @@ const getBaseUrl = (req) => {
   return `${protocol}://${host}`;
 };
 
+const getTourImageUrl = (baseUrl, imageCover) => {
+  if (!imageCover) return null;
+  if (imageCover.startsWith('http')) return imageCover;
+  return `${baseUrl}/img/tours/${imageCover}`;
+};
+
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   //1)Get the Currently booked tour
   const tour = await Tour.findById(req.params.tourId);
@@ -66,10 +72,31 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
 
   // Fetch user manually since req.user is not available on this route
   const currentUser = await User.findById(user);
+  const bookedTour = await Tour.findById(tour);
+  const baseUrl = getBaseUrl(req);
 
-  if (currentUser) {
-    const url = `${getBaseUrl(req)}/my-tours`;
-    await new Email(currentUser, url).sendBookingConfirmation();
+  if (currentUser && bookedTour) {
+    const url = `${baseUrl}/my-tours`;
+    const bookingDate = bookedTour.startDates?.[0]
+      ? new Date(bookedTour.startDates[0]).toLocaleDateString('en-US', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        })
+      : 'To be announced';
+
+    const bookingData = {
+      tourName: bookedTour.name,
+      tourSummary: bookedTour.summary,
+      tourDuration: bookedTour.duration,
+      tourDifficulty: bookedTour.difficulty,
+      tourPrice: bookedTour.price,
+      bookingDate,
+      tourStartLocation: bookedTour.startLocation?.description || 'TBA',
+      tourImage: getTourImageUrl(baseUrl, bookedTour.imageCover),
+    };
+
+    await new Email(currentUser, url, bookingData).sendBookingConfirmation();
   }
 
   res.redirect(req.originalUrl.split('?')[0]);

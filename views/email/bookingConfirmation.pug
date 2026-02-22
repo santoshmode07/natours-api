@@ -3,8 +3,33 @@ extends baseEmail
 
 block content
     p.lead Hi #{firstName},
-    p Your tour booking has been confirmed successfully.
-    p You can view your bookings, details, and upcoming trips anytime from your account.
+    p Your tour booking is confirmed. We are excited to host your next adventure.
+    .mail-panel.mail-panel--booking
+        span.mail-label.mail-label--booking Booking Confirmed
+        if tourImage
+            img.booking-cover(src=tourImage, alt=tourName || 'Booked tour')
+        if tourName
+            p
+                strong= tourName
+        if tourSummary
+            p= tourSummary
+        table.booking-grid(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+                tr
+                    td.booking-key Date
+                    td.booking-value= bookingDate || 'TBA'
+                tr
+                    td.booking-key Duration
+                    td.booking-value= tourDuration ? `${tourDuration} days` : 'TBA'
+                tr
+                    td.booking-key Difficulty
+                    td.booking-value= tourDifficulty || 'TBA'
+                tr
+                    td.booking-key Starting point
+                    td.booking-value= tourStartLocation || 'TBA'
+                tr
+                    td.booking-key Price
+                    td.booking-value= tourPrice ? `$${tourPrice}` : 'TBA'
     table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
         tbody
             tr
@@ -14,7 +39,7 @@ block content
                             tr
                                 td
                                     a(href=`${url}`, target='_blank') View my bookings
-    p.meta-note Need any changes? Reply to this email and we will help.
+    p.meta-note Need schedule changes or support? Reply to this email and our team will help.
     p.last Regards,
         br
         | Santosh and the Natours team

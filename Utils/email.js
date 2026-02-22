@@ -4,12 +4,23 @@ const { convert } = require('html-to-text');
 
 // new Email(user,url).sendWelcome();
 module.exports = class Email {
-  constructor(user, url) {
+  constructor(user, url, data = {}) {
     this.to = user.email;
     this.otp = user.otp || null;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
     this.from = `Santosh <${process.env.EMAIL_FROM}>`;
+    this.logoUrl = this.getLogoUrl(url);
+    this.data = data;
+  }
+
+  getLogoUrl(url) {
+    try {
+      const origin = new URL(url).origin;
+      return `${origin}/img/logo-white.png`;
+    } catch (err) {
+      return null;
+    }
   }
 
   newTransport() {
@@ -39,7 +50,9 @@ module.exports = class Email {
       firstName: this.firstName,
       otp: this.otp,
       url: this.url,
+      logoUrl: this.logoUrl,
       subject,
+      ...this.data,
     });
     //2) Define the email options
     const mailOptions = {

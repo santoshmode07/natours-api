@@ -3,8 +3,12 @@ extends baseEmail
 
 block content
     p.lead Hi #{firstName},
-    p Welcome to Natours. Your account is ready, and your next adventure is one click away.
-    p To personalize your profile and make bookings smoother, upload your photo from your account page.
+    p Welcome to Natours. Your account is ready and your adventure dashboard is live.
+    .mail-panel.mail-panel--welcome
+        span.mail-label Getting Started
+        p Complete your profile photo so guides can recognize you faster on tour day.
+        p Explore tours and save your favorites before you book.
+        p Enable notifications so you never miss important trip updates.
     table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
         tbody
             tr
@@ -14,7 +18,7 @@ block content
                             tr
                                 td
                                     a(href=`${url}`, target='_blank') Set up your profile
-    p.meta-note If you need support, just reply to this email.
+    p.meta-note Need help choosing your first tour? Reply to this email and we will help.
     p.last Regards,
         br
         | Santosh and the Natours team
