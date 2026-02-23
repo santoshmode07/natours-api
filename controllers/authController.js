@@ -59,6 +59,12 @@ const createSendToken = (user, statusCode, req, res, redirectTo = '/') => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
+  if (req.body.role) {
+    return next(new AppError('Cannot assign role during signup', 400));
+  }
+  if (await User.findOne({ email: req.body.email })) {
+    return next(new AppError('Email already exists. Please login.', 400));
+  }
   const redirectTo = sanitizeReturnTo(req.body.returnTo || req.query.returnTo);
   if (req.verify) {
     const newUser = await User.create({
@@ -82,11 +88,17 @@ exports.signup = catchAsync(async (req, res, next) => {
 
 exports.verifyEmail = catchAsync(async (req, res, next) => {
   const { email, otp } = req.body;
+  if (!email || !otp) {
+    return next(new AppError('Please provide email and OTP!', 400));
+  }
+  if (await User.findOne({ email: email })) {
+    return next(new AppError('Email already exists. Please login.', 400));
+  }
   const verifyRecord = await Verify.findOne({ email: email });
 
-  if (!verifyRecord) {
-    return next(new AppError('Please Click the Send OTP.', 404));
-  }
+  // if (!verifyRecord) {
+  //   return next(new AppError('Please Click the Send OTP.', 404));
+  // }
 
   if (verifyRecord.otp !== otp) {
     return next(new AppError('Invalid OTP. Please try again.', 400));
@@ -100,6 +112,12 @@ exports.verifyEmail = catchAsync(async (req, res, next) => {
 exports.sendOTP = catchAsync(async (req, res, next) => {
   try {
     const { email, name } = req.body;
+    if (!email || !name) {
+      return next(new AppError('Please provide email and name!', 400));
+    }
+    if (await User.findOne({ email: email })) {
+      return next(new AppError('Email already exists. Please login.', 400));
+    }
     // console.log(email);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     await Verify.deleteOne({ email: email });

@@ -6,7 +6,16 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  const isDuplicateReview =
+    err?.keyPattern?.tour === 1 && err?.keyPattern?.user === 1;
+
+  if (isDuplicateReview) {
+    return new AppError('You already reviewed this tour.', 400);
+  }
+
+  const key = Object.keys(err.keyValue || {})[0];
+  const rawValue = key ? err.keyValue[key] : null;
+  const value = rawValue !== null && rawValue !== undefined ? rawValue : 'value';
   const message = `Duplicate field value: ${value}. Please use another value!`;
   return new AppError(message, 400);
 };
