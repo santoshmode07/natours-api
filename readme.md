@@ -111,6 +111,8 @@ EMAIL_PASSWORD=
 EMAIL_HOST=
 EMAIL_PORT=
 EMAIL_FROM=
+PUBLIC_BASE_URL=
+EMAIL_LOGO_URL=
 BREVO_USERNAME=
 BREVO_PASSWORD=
 STRIPE_SECRET_KEY=
@@ -123,6 +125,8 @@ Notes:
 
 - In production mode, email transport uses Brevo (`SendinBlue` service).
 - In development mode, email transport uses SMTP host/port/user/pass.
+- `PUBLIC_BASE_URL` should be a public URL (for email asset links).
+- `EMAIL_LOGO_URL` is optional and can override the logo image URL in emails.
 - JWT cookie is `secure` in production.
 
 ## 7. Installation and Run

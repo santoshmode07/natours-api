@@ -5,6 +5,15 @@ const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
 const Review = require('../models/reviewModel');
 
+exports.alerts = (req, res, next) => {
+  const { alert } = req.query;
+  if (alert === 'booking') {
+    res.locals.alert =
+      "Your Booking was Sucessfull! Please check your email for a  confirmation. If Your booking doesn't show up here immediately,please come back later ";
+  }
+  next();
+};
+
 const getSafeReturnTo = (value) => {
   if (typeof value !== 'string') return '/';
   if (!value.startsWith('/')) return '/';
@@ -100,8 +109,8 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   const tourIDs = bookings.map((el) => el.tour);
   const tours = await Tour.find({ _id: { $in: tourIDs } });
 
-  res.status(200).render('overview', {
-    title: 'My Tours',
+  res.status(200).render('myBookings', {
+    title: 'My Bookings',
     tours,
   });
 });

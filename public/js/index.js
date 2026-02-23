@@ -27,6 +27,47 @@ const saveSettingsBtn = document.querySelector('.btn--save-settings');
 
 const bookBtn = document.getElementById('book-tour');
 const sendOtpBtn = document.getElementById('send-otp');
+const pageUrl = new URL(window.location.href);
+const isBookingSuccess = pageUrl.searchParams.get('alert') === 'booking';
+
+const showBookingSuccessAnimation = () => {
+  const markup = `
+    <div class="booking-success" role="status" aria-live="polite">
+      <div class="booking-success__panel">
+        <span class="booking-success__burst booking-success__burst--left"></span>
+        <span class="booking-success__burst booking-success__burst--right"></span>
+        <div class="booking-success__check">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.3 6.7a1 1 0 0 1 0 1.4l-9.1 9.1a1 1 0 0 1-1.4 0L3.7 11a1 1 0 1 1 1.4-1.4l5.4 5.4 8.4-8.3a1 1 0 0 1 1.4 0z"></path>
+          </svg>
+        </div>
+        <p class="booking-success__title">Tour booked successfully</p>
+        <p class="booking-success__text">Your receipt is on the way to your email.</p>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('afterbegin', markup);
+  const overlay = document.querySelector('.booking-success');
+  window.requestAnimationFrame(() => {
+    overlay.classList.add('booking-success--visible');
+  });
+
+  window.setTimeout(() => {
+    overlay.classList.remove('booking-success--visible');
+    window.setTimeout(() => {
+      overlay.remove();
+    }, 450);
+  }, 2600);
+};
+
+const removeBookingAlertFromUrl = () => {
+  if (!isBookingSuccess) return;
+  pageUrl.searchParams.delete('alert');
+  const query = pageUrl.searchParams.toString();
+  const nextUrl = `${pageUrl.pathname}${query ? `?${query}` : ''}${pageUrl.hash}`;
+  window.history.replaceState({}, document.title, nextUrl);
+};
 
 // DELEGATION
 if (sendOtpBtn) {
@@ -163,3 +204,8 @@ if (reviewForm)
     reviewBtn.textContent = 'Submit Review';
     reviewBtn.disabled = false;
   });
+
+const alertMessage = document.querySelector('body').dataset.alert;
+if (isBookingSuccess) showBookingSuccessAnimation();
+if (alertMessage) showAlert('success', alertMessage, 10);
+removeBookingAlertFromUrl();

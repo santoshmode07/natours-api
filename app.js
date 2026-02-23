@@ -30,6 +30,7 @@ const tourRouter = require('./routes/tourRouter');
 const userRouter = require('./routes/userRouter');
 const reviewRouter = require('./routes/reviewRouter');
 const bookingRouter = require('./routes/bookingRouter');
+const bookingController = require('./controllers/bookingController');
 const viewRouter = require('./routes/viewRouter');
 
 app.set('view engine', 'pug');
@@ -123,6 +124,12 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout,
+);
+
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
@@ -158,7 +165,9 @@ app.use(async (req, res, next) => {
     await connectDB();
     return next();
   } catch (err) {
-    return next(new AppError(`Database connection failed: ${err.message}`, 500));
+    return next(
+      new AppError(`Database connection failed: ${err.message}`, 500),
+    );
   }
 });
 

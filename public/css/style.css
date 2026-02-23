@@ -32,7 +32,7 @@ body {
   font-weight: 300;
   font-family: 'Lato', sans-serif;
   color: #777;
-  padding: 3rem;
+  padding: 0;
   min-height: 100vh;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -49,7 +49,7 @@ body {
 }
 
 .main {
-  background-color: #f7f7f7;
+  background-image: linear-gradient(180deg, #f3faf6 0%, #f7f7f7 58%, #eef8f2 100%);
   padding: 8rem 6rem;
   -webkit-box-flex: 1;
   -ms-flex: 1;
@@ -132,6 +132,119 @@ body {
 }
 .alert--error {
   background-color: #eb4d4b;
+}
+
+.booking-success {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.4rem;
+  background: rgba(12, 18, 16, 0.45);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.booking-success--visible {
+  opacity: 1;
+}
+
+.booking-success__panel {
+  width: min(42rem, 100%);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2.4rem 2rem 2.2rem;
+  text-align: center;
+  box-shadow: 0 2rem 5rem rgba(10, 24, 18, 0.25);
+  transform: translateY(14px) scale(0.96);
+  transition: transform 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-success--visible .booking-success__panel {
+  transform: translateY(0) scale(1);
+}
+
+.booking-success__check {
+  width: 7rem;
+  height: 7rem;
+  margin: 0 auto 1.6rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 30% 30%, #43eb83, #0f9e5f);
+  box-shadow: 0 0.8rem 2rem rgba(15, 158, 95, 0.4);
+  animation: bookingPop 0.45s ease-out 0.06s both;
+}
+
+.booking-success__check svg {
+  width: 3.2rem;
+  height: 3.2rem;
+  fill: #fff;
+}
+
+.booking-success__title {
+  color: #1b4a33;
+  font-size: 2.3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.6rem;
+}
+
+.booking-success__text {
+  color: #4a6558;
+  font-size: 1.55rem;
+  margin-bottom: 0;
+}
+
+.booking-success__burst {
+  position: absolute;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 50%;
+  border: 1px solid rgba(40, 207, 105, 0.35);
+  transform: scale(0.5);
+  opacity: 0;
+  animation: bookingBurst 0.9s ease-out 0.12s forwards;
+}
+
+.booking-success__burst--left {
+  left: -2rem;
+  top: -2rem;
+}
+
+.booking-success__burst--right {
+  right: -2rem;
+  bottom: -2rem;
+  animation-delay: 0.2s;
+}
+
+@keyframes bookingPop {
+  0% {
+    transform: scale(0.4);
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bookingBurst {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.45);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
 }
 
 .heading-secondary {
@@ -343,9 +456,9 @@ body {
 
 .header {
   background-image: linear-gradient(120deg, #26363f, #334952);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-bottom: none;
-  border-radius: 1.6rem 1.6rem 0 0;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
   padding: 0 5rem;
   height: 8rem;
   position: relative;

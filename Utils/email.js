@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer');
 const pug = require('pug');
 const { convert } = require('html-to-text');
+const fs = require('fs');
+const path = require('path');
 
 // new Email(user,url).sendWelcome();
 module.exports = class Email {
@@ -10,17 +12,52 @@ module.exports = class Email {
     this.firstName = user.name.split(' ')[0];
     this.url = url;
     this.from = `Santosh <${process.env.EMAIL_FROM}>`;
+    this.logoCid = 'natours-logo';
+    this.logoPath = path.join(__dirname, '../public/img/logo-white.png');
     this.logoUrl = this.getLogoUrl(url);
     this.data = data;
   }
 
   getLogoUrl(url) {
+    if (process.env.EMAIL_LOGO_URL) return process.env.EMAIL_LOGO_URL;
+
     try {
-      const origin = new URL(url).origin;
+      const publicBaseUrl = process.env.PUBLIC_BASE_URL || url;
+      const origin = new URL(publicBaseUrl).origin;
       return `${origin}/img/logo-white.png`;
     } catch (err) {
       return null;
     }
+  }
+
+  getLogoAttachment() {
+    if (!fs.existsSync(this.logoPath)) return null;
+
+    return {
+      filename: 'natours-logo-white.png',
+      path: this.logoPath,
+      cid: this.logoCid,
+    };
+  }
+
+  getInlineAttachments() {
+    const attachments = [];
+    const logoAttachment = this.getLogoAttachment();
+    if (logoAttachment) attachments.push(logoAttachment);
+
+    if (Array.isArray(this.data.inlineAttachments)) {
+      this.data.inlineAttachments.forEach((attachment) => {
+        if (!attachment || !attachment.path || !attachment.cid) return;
+        if (!fs.existsSync(attachment.path)) return;
+        attachments.push({
+          filename: attachment.filename || path.basename(attachment.path),
+          path: attachment.path,
+          cid: attachment.cid,
+        });
+      });
+    }
+
+    return attachments;
   }
 
   newTransport() {
@@ -51,6 +88,7 @@ module.exports = class Email {
       otp: this.otp,
       url: this.url,
       logoUrl: this.logoUrl,
+      logoCid: this.logoCid,
       subject,
       ...this.data,
     });
@@ -61,8 +99,12 @@ module.exports = class Email {
       subject,
       html,
       text: convert(html),
-      // html:
     };
+
+    const inlineAttachments = this.getInlineAttachments();
+    if (inlineAttachments.length > 0) {
+      mailOptions.attachments = inlineAttachments;
+    }
 
     // 3)Create a transport and send email
     await this.newTransport().sendMail(mailOptions);

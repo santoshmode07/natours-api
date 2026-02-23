@@ -13,7 +13,7 @@ html
         table.body(role='presentation', border='0', cellpadding='0', cellspacing='0')
             tbody
                 tr
-                    td.container
+                    td.container(align='center')
                         .content
                             table.main(role='presentation')
                                 tbody
@@ -23,8 +23,12 @@ html
                                                 tbody
                                                     tr
                                                         td.brand-logo-cell
-                                                            if logoUrl
-                                                                img.brand-logo(src=logoUrl, alt='Natours logo')
+                                                            if logoCid
+                                                                img.brand-logo(src=`cid:${logoCid}`, alt='Natours logo', width='40', height='40')
+                                                            else if logoUrl
+                                                                img.brand-logo(src=logoUrl, alt='Natours logo', width='40', height='40')
+                                                            else
+                                                                span.brand-logo-fallback N
                                                         td.brand-copy
                                                             span.brand-title Natours
                                                             h2.brand-heading Your next adventure starts here

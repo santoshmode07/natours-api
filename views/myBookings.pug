@@ -1,7 +1,5 @@
 extends base
 
-include _reviewCard
-
 block content
     main.main.main--dashboard
         .user-view
@@ -12,12 +10,12 @@ block content
                             svg
                                 use(xlink:href='img/icons.svg#icon-settings')
                             | Settings
-                    li
+                    li.side-nav--active
                         a(href='/my-tours')
                             svg
                                 use(xlink:href='img/icons.svg#icon-briefcase')
                             | My bookings
-                    li.side-nav--active
+                    li
                         a(href='/my-reviews')
                             svg
                                 use(xlink:href='img/icons.svg#icon-star')
@@ -55,15 +53,38 @@ block content
 
             .user-view__content
                 .user-view__form-container.user-view__form-container--full
-                    h2.heading-secondary.ma-bt-md My Reviews
-                    
-                    if reviews.length === 0
-                        p You haven't written any reviews yet!
+                    h2.heading-secondary.ma-bt-md My Booked Tours
+
+                    if tours.length === 0
+                        p You haven't booked any tours yet!
                     else
                         .reviews-container
-                            each review in reviews
+                            each tour in tours
                                 .review-item.ma-bt-lg
                                     .review-item__tour-info.ma-bt-sm
-                                        img.review-item__tour-img(src=`/img/tours/${review.tour.imageCover}`, alt=`${review.tour.name}`)
-                                        span.review-item__tour-name= review.tour.name
-                                    +reviewCard(review)
+                                        img.review-item__tour-img(src=`/img/tours/${tour.imageCover}`, alt=`${tour.name}`)
+                                        span.review-item__tour-name= tour.name
+
+                                    p.ma-bt-md= tour.summary
+
+                                    .card__data
+                                        svg.card__icon
+                                            use(xlink:href='/img/icons.svg#icon-calendar')
+                                        span= tour.startDates && tour.startDates[0] ? tour.startDates[0].toLocaleString('en-us',{month:'long',year:'numeric'}) : 'No upcoming dates'
+
+                                    .card__data
+                                        svg.card__icon
+                                            use(xlink:href='/img/icons.svg#icon-map-pin')
+                                        span= tour.startLocation && tour.startLocation.description ? tour.startLocation.description : 'Location TBA'
+
+                                    .card__data
+                                        svg.card__icon
+                                            use(xlink:href='/img/icons.svg#icon-flag')
+                                        span= `${tour.locations ? tour.locations.length : 0} stops`
+
+                                    .card__data.ma-bt-md
+                                        svg.card__icon
+                                            use(xlink:href='/img/icons.svg#icon-user')
+                                        span= `${tour.maxGroupSize} people`
+
+                                    a.btn.btn--small.btn--green(href=`/tour/${tour.slug}`) View tour

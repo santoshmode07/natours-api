@@ -6,7 +6,9 @@ block content
     p Your tour booking is confirmed. We are excited to host your next adventure.
     .mail-panel.mail-panel--booking
         span.mail-label.mail-label--booking Booking Confirmed
-        if tourImage
+        if tourImageCid
+            img.booking-cover(src=`cid:${tourImageCid}`, alt=tourName || 'Booked tour')
+        else if tourImage
             img.booking-cover(src=tourImage, alt=tourName || 'Booked tour')
         if tourName
             p

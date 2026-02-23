@@ -16,6 +16,12 @@ style.
     -webkit-text-size-adjust: 100%;
     color: #2e3a40;
   }
+  html,
+  body {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
   table {
     border-collapse: separate;
     mso-table-lspace: 0pt;
@@ -35,15 +41,15 @@ style.
     display: block;
     margin: 0 auto !important;
     max-width: 620px;
-    padding: 0 14px;
-    width: 620px;
+    width: 100% !important;
+    padding: 0 !important;
   }
   .content {
     box-sizing: border-box;
     display: block;
     margin: 0 auto;
     max-width: 620px;
-    padding: 0;
+    padding: 0 14px;
   }
   .main {
     background: #ffffff;
@@ -71,9 +77,26 @@ style.
     vertical-align: middle;
   }
   .brand-logo {
+    box-sizing: border-box;
     width: 40px;
     height: 40px;
     display: block;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    padding: 5px;
+    object-fit: contain;
+  }
+  .brand-logo-fallback {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.22);
   }
   .brand-title {
     display: inline-block;
@@ -285,8 +308,11 @@ style.
       padding: 0;
     }
     .container {
-      padding: 0 10px;
       width: 100% !important;
+      padding: 0 !important;
+    }
+    .content {
+      padding: 0 10px;
     }
     .brand-bar {
       padding: 14px 14px;
