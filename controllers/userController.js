@@ -74,6 +74,7 @@ const multerFilter = (req, file, cb) => {
 const upload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
+  limits: { fileSize: 6 * 1024 * 1024 }, // 6MB hard cap to avoid serverless payload limits
 });
 
 exports.uploadUserPhoto = upload.single('photo');

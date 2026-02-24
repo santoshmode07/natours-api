@@ -30,6 +30,16 @@ const handleJWTError = () =>
 const handleJWTExpiredError = () =>
   new AppError('Your token has expired! Please log in again.', 401);
 
+const handleMulterError = (err) => {
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return new AppError(
+      'Photo too large. Please upload an image under 6MB.',
+      413,
+    );
+  }
+  return new AppError(`Upload failed: ${err.message}`, 400);
+};
+
 const sendErrorDev = (err, req, res) => {
   // API
   if (req.originalUrl.startsWith('/api')) {
@@ -109,6 +119,9 @@ module.exports = (err, req, res, next) => {
     }
     if (err.name === 'TokenExpiredError') {
       error = handleJWTExpiredError();
+    }
+    if (err.name === 'MulterError') {
+      error = handleMulterError(err);
     }
     // Operational, trusted error: send message to client
     sendErrorProd(error, req, res);
