@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import Overview from './pages/Overview';
+
 // Simple placeholder page components for our router skeleton
-const Overview = () => <main className="main"><div className="card-container"><h2>Overview Page Placeholder</h2></div></main>;
 const TourDetail = () => <main className="main"><h2>Tour Detail Page Placeholder</h2></main>;
 const Login = () => <main className="main"><h2>Login Page Placeholder</h2></main>;
 const Signup = () => <main className="main"><h2>Signup Page Placeholder</h2></main>;
