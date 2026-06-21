@@ -1,21 +1,22 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 
 const Header = () => {
   const navigate = useNavigate();
-  // Retrieve user data from localStorage
-  const user = JSON.parse(localStorage.getItem('user'));
+  // Consume auth state, loading, and logout function from Context API
+  const { user, loading, logoutUser } = useAuth();
 
-  // Logout handler to call API and clear localStorage
+  // Logout handler to call API and clear context state
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
       const response = await api.get('/users/logout');
       if (response.data.status === 'success') {
-        localStorage.removeItem('user');
-        // Force redirect to homepage and refresh auth state
-        window.location.href = '/';
+        logoutUser();
+        // Redirect to home page smoothly using React Router
+        navigate('/');
       }
     } catch (err) {
       console.error('Logout failed:', err);
@@ -39,7 +40,10 @@ const Header = () => {
 
       {/* Right side: User navigation */}
       <nav className="nav nav--user">
-        {user ? (
+        {loading ? (
+          // Placeholder space to prevent button flashing during session load
+          <span className="nav__el">&nbsp;</span>
+        ) : user ? (
           <>
             <a href="#" onClick={handleLogout} className="nav__el nav__el--logout">
               Log out

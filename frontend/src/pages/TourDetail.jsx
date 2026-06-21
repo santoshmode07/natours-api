@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 
 const TourDetail = () => {
   // useParams: extracts the tour slug from the URL path (defined as /tour/:slug)
@@ -13,8 +14,8 @@ const TourDetail = () => {
   const [bookingLoading, setBookingLoading] = useState(false);
   const mapContainerRef = useRef(null);
 
-  // Read logged-in user from localStorage (will connect to global AuthContext later)
-  const user = JSON.parse(localStorage.getItem('user'));
+  // Consume logged-in user from global AuthContext
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchTourData = async () => {

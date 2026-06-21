@@ -10,16 +10,19 @@ import Login from './pages/Login';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
+import Signup from './pages/Signup';
+import { AuthProvider } from './context/AuthContext';
+
 // Simple placeholder page components for our router skeleton
-const Signup = () => <main className="main"><h2>Signup Page Placeholder</h2></main>;
 const Account = () => <main className="main"><h2>My Account Page Placeholder</h2></main>;
 const Bookings = () => <main className="main"><h2>My Bookings Page Placeholder</h2></main>;
 
 // Shared layout placeholders (Navbar and Footer will live here)
 const App = () => {
   return (
-    <Router>
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <AuthProvider>
+      <Router>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         {/* Real Header component */}
         <Header />
 
@@ -37,6 +40,7 @@ const App = () => {
         <Footer />
       </div>
     </Router>
+  </AuthProvider>
   );
 };
 

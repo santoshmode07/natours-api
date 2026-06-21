@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import api from '../utils/api';
 import { showAlert } from '../utils/alert';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
+  const { loginUser } = useAuth();
   // Local state for form inputs (Controlled Components)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,14 +30,12 @@ const Login = () => {
 
       if (response.data.status === 'success') {
         showAlert('success', 'Logged in successfully!');
-        // Save user details to localStorage so other pages can detect authenticated state
-        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        // Save user details to global AuthContext state
+        loginUser(response.data.data.user);
         
         // Delay redirect slightly so the user sees the slide-down alert banner
         setTimeout(() => {
           navigate(returnTo);
-          // Force a page refresh to update auth state in App navbar
-          window.location.reload();
         }, 1500);
       }
     } catch (err) {

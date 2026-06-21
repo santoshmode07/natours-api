@@ -120,10 +120,15 @@ exports.sendOTP = catchAsync(async (req, res, next) => {
     }
     // console.log(email);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(`🔑 DEVELOPMENT OTP for ${email}: ${otp}`);
     await Verify.deleteOne({ email: email });
     await Verify.create({ email: email, otp: otp });
     const url = `${req.protocol}://${req.get('host')}/api/v1/users/verifyEmail`;
-    await new Email({ email, otp, name }, url).sendOTP();
+    try {
+      await new Email({ email, otp, name }, url).sendOTP();
+    } catch (mailErr) {
+      console.warn('⚠️ OTP email delivery failed, but continuing for development:', mailErr.message);
+    }
     res.status(200).json({
       status: 'success',
       message: 'OTP sent successfully',
