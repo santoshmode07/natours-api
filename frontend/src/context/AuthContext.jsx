@@ -14,7 +14,10 @@ export const AuthProvider = ({ children }) => {
       try {
         const response = await api.get('/users/me');
         if (response.data.status === 'success') {
-          const freshUser = response.data.data.data || response.data.data.user;
+          const freshUser =
+            response.data.data.doc ||
+            response.data.data.user ||
+            response.data.data.data;
           setUser(freshUser);
         }
       } catch (err) {

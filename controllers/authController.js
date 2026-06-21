@@ -15,10 +15,17 @@ const sanitizeReturnTo = (value) => {
   return value;
 };
 
-const isSecureRequest = (req) =>
-  req.secure ||
-  req.protocol === 'https' ||
-  req.get('x-forwarded-proto') === 'https';
+const isSecureRequest = (req) => {
+  const host = req.get('host') || '';
+  if (host.includes('localhost') || host.includes('127.0.0.1')) {
+    return false;
+  }
+  return (
+    req.secure ||
+    req.protocol === 'https' ||
+    req.get('x-forwarded-proto') === 'https'
+  );
+};
 
 const getCookieOptions = (req, expires) => ({
   ...(expires ? { expires } : {}),
