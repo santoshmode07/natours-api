@@ -239,6 +239,23 @@ exports.createBookingCheckoutFromSuccess = catchAsync(async (req, res, next) => 
   return res.redirect(`/my-tours${alertQuery}`);
 });
 
+exports.getMyBookings = catchAsync(async (req, res, next) => {
+  // 1) Find all bookings for logged-in user
+  const bookings = await Booking.find({ user: req.user.id });
+
+  // 2) Find tours with the returned IDs
+  const tourIDs = bookings.map((el) => el.tour);
+  const tours = await Tour.find({ _id: { $in: tourIDs } });
+
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours,
+    },
+  });
+});
+
 //Factory functions for CRUD operations on Booking model
 exports.createBooking = factory.createOne(Booking);
 exports.getBooking = factory.getOne(Booking);

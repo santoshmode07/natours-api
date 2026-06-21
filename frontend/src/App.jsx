@@ -12,11 +12,9 @@ import Footer from './components/Footer';
 
 import Signup from './pages/Signup';
 import Account from './pages/Account';
+import Bookings from './pages/Bookings';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
-
-// Simple placeholder page components for our router skeleton
-const Bookings = () => <main className="main"><h2>My Bookings Page Placeholder</h2></main>;
 
 // Shared layout placeholders (Navbar and Footer will live here)
 const App = () => {
