@@ -6,6 +6,12 @@ const authController = require('../controllers/authController');
 const router = express.Router({ mergeParams: true });
 
 // GET reviews (all or nested) is public so anyone can read reviews
+router.get(
+  '/my-reviews',
+  authController.protect,
+  reviewController.getMyReviews
+);
+
 router
   .route('/')
   .get(reviewController.getAllReviews)

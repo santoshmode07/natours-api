@@ -70,6 +70,7 @@ app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'frontend/dist')));
 
 // Set security HTTP headers
 app.use(
@@ -200,11 +201,18 @@ app.use((req, res, next) => {
 
 // 3)ROUTES
 
-app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/bookings', bookingRouter);
+
+// Catch-all route to serve the React SPA for any web navigation
+app.get('*', (req, res, next) => {
+  if (req.originalUrl.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+});
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

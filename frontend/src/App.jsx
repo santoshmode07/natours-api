@@ -13,6 +13,8 @@ import Footer from './components/Footer';
 import Signup from './pages/Signup';
 import Account from './pages/Account';
 import Bookings from './pages/Bookings';
+import MyReviews from './pages/MyReviews';
+import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
@@ -49,6 +51,18 @@ const App = () => {
               </ProtectedRoute>
             } 
           />
+
+          <Route 
+            path="/my-reviews" 
+            element={
+              <ProtectedRoute>
+                <MyReviews />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* Catch-all Not Found Route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
 
         {/* Real Footer component */}
