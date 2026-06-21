@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 
 import Signup from './pages/Signup';
 import Account from './pages/Account';
+import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
 // Simple placeholder page components for our router skeleton
@@ -32,8 +33,24 @@ const App = () => {
           <Route path="/tour/:slug" element={<TourDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/me" element={<Account />} />
-          <Route path="/my-tours" element={<Bookings />} />
+          
+          <Route 
+            path="/me" 
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/my-tours" 
+            element={
+              <ProtectedRoute>
+                <Bookings />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
 
         {/* Real Footer component */}

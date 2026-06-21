@@ -5,15 +5,7 @@ import api from '../utils/api';
 import { showAlert } from '../utils/alert';
 
 const Account = () => {
-  const { user, loading, setUser } = useAuth();
-  const navigate = useNavigate();
-
-  // Redirect if not logged in (Protected Route logic)
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/login?returnTo=/me');
-    }
-  }, [user, loading, navigate]);
+  const { user, setUser } = useAuth();
 
   // Form 1: Settings states
   const [name, setName] = useState('');
@@ -107,15 +99,7 @@ const Account = () => {
     }
   };
 
-  if (loading || !user) {
-    return (
-      <main className="main">
-        <div style={{ textAlign: 'center', fontSize: '2rem', padding: '10rem 0' }}>
-          Loading your account settings...
-        </div>
-      </main>
-    );
-  }
+
 
   // Determine user photo source URL
   const photoSrc = photoPreview
