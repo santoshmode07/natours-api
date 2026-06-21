@@ -3,8 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Overview from './pages/Overview';
 
+import TourDetail from './pages/TourDetail';
+
 // Simple placeholder page components for our router skeleton
-const TourDetail = () => <main className="main"><h2>Tour Detail Page Placeholder</h2></main>;
 const Login = () => <main className="main"><h2>Login Page Placeholder</h2></main>;
 const Signup = () => <main className="main"><h2>Signup Page Placeholder</h2></main>;
 const Account = () => <main className="main"><h2>My Account Page Placeholder</h2></main>;
