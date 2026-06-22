@@ -13,14 +13,14 @@ module.exports = class Email {
   // Create SMTP transporter based on current NODE_ENV
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      // Connect directly to Brevo SMTP Relay
+      // Connect to SMTP Relay over secure SSL on port 465
       return nodemailer.createTransport({
-        host: 'smtp-relay.brevo.com',
-        port: 587,
-        secure: false, // TLS
+        host: process.env.EMAIL_HOST,
+        port: 465,
+        secure: true, // SSL for port 465
         auth: {
-          user: process.env.BREVO_USERNAME,
-          pass: process.env.BREVO_PASSWORD,
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
         },
       });
     }
