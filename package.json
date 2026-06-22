@@ -9,7 +9,8 @@
     "start:prod": "NODE_ENV=production nodemon server.js",
     "debug": "NODE_ENV=development nodemon --inspect server.js",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js --no-source-maps",
-    "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js --no-source-maps"
+    "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js --no-source-maps",
+    "build": "cd frontend && npm install && npm run build"
   },
   "author": "Santosh",
   "license": "ISC",
