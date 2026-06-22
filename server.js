@@ -26,34 +26,44 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD,
 );
 
+let server;
+
 mongoose
   .connect(DB, {
     serverSelectionTimeoutMS: 10000, // Timeout after 10 seconds instead of buffering indefinitely
   })
   .then(() => {
     console.log('DB connection successful!');
+    // Server port setup after successful DB connection
+    const port = process.env.PORT || 3000;
+    server = app.listen(port, () => {
+      console.log(`App running on port ${port}...`);
+    });
   })
   .catch((err) => {
     console.log('DB connection error:', err.message);
     process.exit(1);
   });
 
-const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-  console.log(`App running on port ${port}...`);
-});
-
 process.on('SIGTERM', () => {
   console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
-  server.close(() => {
-    console.log('💥 Process terminated!');
-  });
+  if (server) {
+    server.close(() => {
+      console.log('💥 Process terminated!');
+    });
+  } else {
+    process.exit(0);
+  }
 });
 
 process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! Shutting down...');
   console.log(err.name, err.message);
-  server.close(() => {
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  } else {
     process.exit(1);
-  });
+  }
 });

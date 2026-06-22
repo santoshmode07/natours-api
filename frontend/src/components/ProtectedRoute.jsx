@@ -10,8 +10,8 @@ const ProtectedRoute = ({ children }) => {
   if (loading) {
     return (
       <main className="main">
-        <div style={{ textAlign: 'center', fontSize: '2rem', padding: '10rem 0', color: '#777' }}>
-          Loading your session...
+        <div className="spinner-container">
+          <div className="spinner"></div>
         </div>
       </main>
     );

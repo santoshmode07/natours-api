@@ -31,6 +31,7 @@ const userRouter = require('./routes/userRouter');
 const reviewRouter = require('./routes/reviewRouter');
 const bookingRouter = require('./routes/bookingRouter');
 const bookingController = require('./controllers/bookingController');
+const authController = require('./controllers/authController');
 const viewRouter = require('./routes/viewRouter');
 
 app.set('view engine', 'pug');
@@ -205,6 +206,9 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/bookings', bookingRouter);
+
+// Intercept checkout success redirection to create booking document in database
+app.get('/my-tours', authController.protect, bookingController.createBookingCheckoutFromSuccess);
 
 // Catch-all route to serve the React SPA for any web navigation
 app.get('*', (req, res, next) => {

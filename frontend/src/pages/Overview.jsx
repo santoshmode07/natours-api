@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
+import { CardSkeletonList } from '../components/LoadingSkeletons';
 
 const Overview = () => {
   // useState: stores the list of tours, loading status, and error states
@@ -32,13 +33,7 @@ const Overview = () => {
 
   // Render loading state
   if (loading) {
-    return (
-      <main className="main">
-        <div style={{ textAlign: 'center', fontSize: '2rem', color: '#555', padding: '10rem 0' }}>
-          Loading tours...
-        </div>
-      </main>
-    );
+    return <CardSkeletonList count={6} />;
   }
 
   // Render error state

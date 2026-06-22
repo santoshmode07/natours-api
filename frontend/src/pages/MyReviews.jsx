@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
+import { ReviewSkeletonList } from '../components/LoadingSkeletons';
 
 const MyReviews = () => {
   const { user } = useAuth();
@@ -30,15 +31,7 @@ const MyReviews = () => {
     fetchReviews();
   }, []);
 
-  if (loading) {
-    return (
-      <main className="main">
-        <div style={{ textAlign: 'center', fontSize: '2rem', color: '#555', padding: '10rem 0' }}>
-          Loading your reviews...
-        </div>
-      </main>
-    );
-  }
+
 
   return (
     <main className="main main--dashboard">
@@ -127,13 +120,15 @@ const MyReviews = () => {
           <div className="user-view__form-container" style={{ maxWidth: 'none' }}>
             <h2 className="heading-secondary ma-bt-md">Your Reviews</h2>
 
+            {loading && <ReviewSkeletonList count={3} />}
+
             {error && (
               <div style={{ color: '#ff7730', fontSize: '1.6rem', padding: '2rem 0' }}>
                 {error}
               </div>
             )}
 
-            {!error && reviews.length === 0 && (
+            {!loading && !error && reviews.length === 0 && (
               <div style={{ textAlign: 'center', padding: '4rem 0' }}>
                 <h3 className="heading-tertiary ma-bt-md">You haven't written any reviews yet!</h3>
                 <p style={{ fontSize: '1.4rem', color: '#777', marginBottom: '2rem' }}>
@@ -142,7 +137,7 @@ const MyReviews = () => {
               </div>
             )}
 
-            {!error && reviews.length > 0 && (
+            {!loading && !error && reviews.length > 0 && (
               <div className="reviews-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(30rem, 1fr))', gap: '3rem' }}>
                 {reviews.map((review) => {
                   const tour = review.tour || {};

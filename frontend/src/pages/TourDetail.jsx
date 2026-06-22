@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { TourDetailSkeleton } from '../components/LoadingSkeletons';
 
 const TourDetail = () => {
   // useParams: extracts the tour slug from the URL path (defined as /tour/:slug)
@@ -139,13 +140,7 @@ const TourDetail = () => {
   };
 
   if (loading) {
-    return (
-      <main className="main">
-        <div style={{ textAlign: 'center', fontSize: '2rem', color: '#555', padding: '10rem 0' }}>
-          Loading tour details...
-        </div>
-      </main>
-    );
+    return <TourDetailSkeleton />;
   }
 
   if (error) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
+import { CardSkeletonList } from '../components/LoadingSkeletons';
 
 const Bookings = () => {
   const [tours, setTours] = useState([]);
@@ -29,13 +30,7 @@ const Bookings = () => {
   }, []);
 
   if (loading) {
-    return (
-      <main className="main">
-        <div style={{ textAlign: 'center', fontSize: '2rem', color: '#555', padding: '10rem 0' }}>
-          Loading your bookings...
-        </div>
-      </main>
-    );
+    return <CardSkeletonList count={3} />;
   }
 
   if (error) {

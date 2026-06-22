@@ -1815,3 +1815,73 @@ body {
   padding: 1.25rem 2rem;
   font-size: 1.4rem;
 }
+
+/* ==========================================
+   LOADING SKELETON ANIMATIONS & STYLES
+   ========================================== */
+@keyframes skeleton-pulse {
+  0% {
+    background-color: #e5e7eb;
+    opacity: 0.6;
+  }
+  50% {
+    background-color: #f3f4f6;
+    opacity: 1;
+  }
+  100% {
+    background-color: #e5e7eb;
+    opacity: 0.6;
+  }
+}
+
+.skeleton-box {
+  display: inline-block;
+  height: 1.6rem;
+  width: 100%;
+  animation: skeleton-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-radius: 4px;
+}
+
+.skeleton-text {
+  height: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.skeleton-title {
+  height: 2.4rem;
+  margin-bottom: 1.2rem;
+}
+
+.skeleton-img {
+  width: 100%;
+  height: 100%;
+  animation: skeleton-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeleton-avatar {
+  border-radius: 50%;
+  animation: skeleton-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Spinner Loader */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15rem 0;
+}
+
+.spinner {
+  width: 5rem;
+  height: 5rem;
+  border: 4px solid #ececec;
+  border-top: 4px solid #55c57a;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

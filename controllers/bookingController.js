@@ -240,12 +240,17 @@ exports.createBookingCheckoutFromSuccess = catchAsync(async (req, res, next) => 
 });
 
 exports.getMyBookings = catchAsync(async (req, res, next) => {
+  console.log('--- GET MY BOOKINGS ROUTE HIT ---');
+  console.log('User ID:', req.user.id);
   // 1) Find all bookings for logged-in user
   const bookings = await Booking.find({ user: req.user.id });
+  console.log('Bookings query success. Count:', bookings.length);
 
   // 2) Find tours with the returned IDs
   const tourIDs = bookings.map((el) => el.tour);
+  console.log('Tour IDs mapping:', tourIDs);
   const tours = await Tour.find({ _id: { $in: tourIDs } });
+  console.log('Tours query success. Count:', tours.length);
 
   res.status(200).json({
     status: 'success',
