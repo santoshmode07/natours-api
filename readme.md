@@ -1,402 +1,160 @@
-# Natours Application (Full Project Guide)
+# 🏕️ Natours SPA — Modern Full-Stack Booking Platform
 
-## 1. Project Overview
+[![React](https://img.shields.io/badge/Frontend-React%2019-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Build-Vite-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
+[![Node.js](https://img.shields.io/badge/Backend-Node.js%20Express-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB%20Mongoose-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Render](https://img.shields.io/badge/Hosting-Render-46E3B7?logo=render&logoColor=white)](https://render.com/)
+[![Vercel](https://img.shields.io/badge/Hosting-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com/)
 
-Natours is a full-stack tour booking application built with Node.js, Express, MongoDB, and Pug.
+Natours is a premium, high-performance, full-stack tour booking application. Originally built as a legacy Pug server-rendered project, it has been fully re-engineered into a modern **Decoupled Single Page Application (SPA)** with a React frontend and a secure Express REST API backend.
 
-It includes:
+---
 
-- REST API for tours, users, reviews, and bookings
-- Server-rendered pages with Pug templates
-- JWT authentication using HTTP-only cookies
-- OTP-based email verification during signup
-- Stripe checkout session creation for bookings
-- Image upload + processing with Multer and Sharp
-- Email workflows for welcome, OTP, password reset, and booking confirmation
+## ✨ Features & Enhancements
 
-## 2. Tech Stack
+### 🎨 Modern Frontend (React SPA)
+* **Single Page Application**: Instant page transitions powered by React Router client-side routing.
+* **Premium Loading Skeletons**: Handcrafted pulsed-opacity layout-accurate skeletons (`Overview`, `Tour Detail`, `Bookings`, and `Reviews` dashboards) preventing layout shifts.
+* **Global Auth Context**: Session state management via context provider with secure HTTP-Only cross-site cookie persistence.
+* **Interactive Reviews & Bookings**: Integrated dashboard interfaces to manage booked tours and submit tour reviews.
 
-- Backend: Node.js, Express
-- Database: MongoDB + Mongoose
-- Auth: JWT + cookies
-- Emails: Nodemailer + Pug email templates
-- Payments: Stripe Checkout
-- Views: Pug
-- Security middleware: Helmet, rate limiting, mongo-sanitize, xss-clean, hpp
-- Frontend build: Parcel (bundles `public/js/index.js`)
+### ⚡ Secure API Backend
+* **Decoupled Architecture**: Separated concerns hosting the frontend on Vercel and the REST API on Render.
+* **Brevo REST HTTP API Integration**: Email delivery (Welcome, OTP, Password Reset) runs via Brevo's direct HTTP POST API (Port `443` HTTPS), completely bypassing SMTP port blockages on cloud providers.
+* **Robust Stripe Integration**: Real-time Stripe checkout session generation with automatic verification callbacks.
+* **DB-First Server Startup**: Guaranteed database connectivity before port binding to prevent 500 errors during restart cycles.
 
-## 3. Project Structure
+---
+
+## 🛠️ Tech Stack & Services
+
+| Layer | Technology / Service | Description |
+| :--- | :--- | :--- |
+| **Frontend** | React 19, React Router 7, Axios | Client logic, SPA routing, backend communication. |
+| **Build Tools** | Vite | Ultra-fast production packaging. |
+| **Backend** | Node.js, Express | REST API, route guarding, payment management. |
+| **Database** | MongoDB + Mongoose | Data models for Users, Tours, Bookings, Reviews, and OTPs. |
+| **Payments** | Stripe | Payment processing and checkout flows. |
+| **Emails** | Brevo REST API, Axios | Direct HTTP email notifications. |
+| **Security** | Helmet, CORS, Rate Limit, Mongo Sanitize, XSS | Comprehensive OWASP protection layer. |
+
+---
+
+## 📂 Project Structure
 
 ```text
-starter/
-  app.js                     # Express app config + middleware + route mounting
-  server.js                  # Env loading, DB connection, server startup/shutdown
-  config.env                 # Environment variables (local development)
-  package.json               # Scripts + dependencies
-
-  controllers/               # Request handlers
-    authController.js
-    bookingController.js
-    errorController.js
-    handlerFactory.js
-    reviewController.js
-    tourController.js
-    userController.js
-    viewsController.js
-
-  models/                    # Mongoose schemas
-    bookingModel.js
-    reviewModel.js
-    tourModel.js
-    userModel.js
-    verifyModel.js
-
-  routes/                    # Express routers
-    bookingRouter.js
-    reviewRouter.js
-    tourRouter.js
-    userRouter.js
-    viewRouter.js
-
-  Utils/                     # Shared utilities
-    apiFeatures.js
-    appError.js
-    catchAsync.js
-    email.js
-
-  views/                     # Pug templates for pages + emails
-  public/                    # Static assets (css/js/images)
-  dev-data/                  # Seed data + import script
+├── app.js                       # Express configuration & global error handling
+├── server.js                    # Database connection & server lifecycle
+├── render.yaml                  # Infrastructure-as-code for Render deployment
+├── config.env                   # Env configurations (Excluded from git)
+├── controllers/                 # Express Request Handlers
+│   ├── authController.js        # JWT generation, signups, OTP verifications
+│   ├── bookingController.js     # Stripe checkouts, booking records
+│   ├── errorController.js       # Production vs development error responses
+│   └── ...
+├── models/                      # MongoDB schemas & validations
+│   ├── bookingModel.js
+│   ├── tourModel.js
+│   ├── userModel.js
+│   └── verifyModel.js           # TTL verified OTP codes (expires in 10m)
+├── routes/                      # API endpoint configurations
+├── Utils/                       # Core utility helpers
+│   ├── email.js                 # Brevo REST API dispatcher
+│   └── ...
+└── frontend/                    # Vite + React Client
+    ├── src/
+    │   ├── App.jsx              # Main routing entries
+    │   ├── components/          # Reusable UI (Skeletons, Headers, ProtectedRoute)
+    │   ├── context/             # AuthContext session states
+    │   └── pages/               # Views (Overview, TourDetail, Account, Bookings, Reviews)
+    ├── vercel.json              # SPA routing rewrites for Vercel
+    └── .env.production          # Frontend build variables
 ```
 
-## 4. Runtime Flow
+---
 
-- `server.js` loads environment from `config.env`.
-- MongoDB connection string uses `DATABASE` + `DATABASE_PASSWORD`.
-- Express app from `app.js` is started on `PORT` (default 3000).
-- Global error handling is done in `controllers/errorController.js`.
-- Graceful shutdown handlers exist for:
-  - `uncaughtException`
-  - `unhandledRejection`
-  - `SIGTERM`
+## 🔐 Environment Configurations
 
-## 5. Security Middleware in `app.js`
-
-Applied globally:
-
-- `helmet` with custom CSP for Stripe, OSM tiles, JS/CDN assets
-- `express-rate-limit` on `/api` (100 requests/hour/IP)
-- `express.json` and `express.urlencoded` body parsing
-- `cookie-parser`
-- `express-mongo-sanitize`
-- `xss-clean`
-- `hpp` with whitelist fields for filter/sort use cases
-
-## 6. Environment Variables
-
-These keys are used by the project:
-
+### Backend (`config.env`)
+Create a `config.env` file at the root level of your backend project:
 ```env
-NODE_ENV=
-PORT=
-DATABASE=
-DATABASE_LOCAL=
-DATABASE_PASSWORD=
-USERNAME=
-JWT_SECRET=
-JWT_EXPIRES_IN=
-JWT_COOKIE_EXPIRES_IN=
-EMAIL_USERNAME=
-EMAIL_PASSWORD=
-EMAIL_HOST=
-EMAIL_PORT=
-EMAIL_FROM=
-PUBLIC_BASE_URL=
-EMAIL_LOGO_URL=
-BREVO_USERNAME=
-BREVO_PASSWORD=
-STRIPE_SECRET_KEY=
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+NODE_ENV=production
+PORT=3000
+FRONTEND_URL=https://natours-api-two.vercel.app
+
+DATABASE=mongodb+srv://<user>:<password>@cluster.mongodb.net/natours
+DATABASE_PASSWORD=your_mongodb_password
+
+JWT_SECRET=your_jwt_signing_secret_phrase
+JWT_EXPIRES_IN=90d
+JWT_COOKIE_EXPIRES_IN=90
+
+BREVO_API_KEY=your_brevo_api_key
+EMAIL_FROM=hello@natours.com
+
+STRIPE_SECRET_KEY=your_stripe_test_secret_key
 ```
 
-Notes:
-
-- In production mode, email transport uses Brevo (`SendinBlue` service).
-- In development mode, email transport uses SMTP host/port/user/pass.
-- `PUBLIC_BASE_URL` should be a public URL (for email asset links).
-- `EMAIL_LOGO_URL` is optional and can override the logo image URL in emails.
-- JWT cookie is `secure` in production.
-
-## 7. Installation and Run
-
-1. Install dependencies:
-
-```bash
-npm install
+### Frontend (`frontend/.env.production`)
+Create a `.env.production` inside the `/frontend` subfolder:
+```env
+VITE_API_URL=https://natours-backend.onrender.com
 ```
 
-2. Configure `config.env`.
-3. Start app in development mode:
+---
 
+## 🚀 Standalone Deployments
+
+### 1. Backend on Render
+1. Connect your repository to **Render**.
+2. Select **Web Service**.
+3. Apply the following settings:
+   * **Build Command**: `npm install`
+   * **Start Command**: `node server.js`
+4. Add all environment variables from `config.env` (specifically `FRONTEND_URL`, `DATABASE`, `BREVO_API_KEY`, etc.) inside Render's **Environment** tab.
+
+### 2. Frontend on Vercel
+1. Connect your repository to **Vercel**.
+2. Set the **Root Directory** settings to **`frontend`** (essential!).
+3. Add the following environment variable:
+   * **Key**: `VITE_API_URL`
+   * **Value**: `https://your-render-backend-url.onrender.com`
+4. Deploy. Vercel will automatically compile the React build using `npm run build` (Vite) and serve it.
+
+---
+
+## 🔒 Security Middleware
+
+* **CORS Settings**: Fully configured to accept cross-site requests with credentials from registered Vercel subdomains.
+* **HTTP-Only Cookies**: JWT authentication token is issued as a secure, HTTP-Only cookie with `sameSite: 'none'` (cross-site) inside production, preventing XSS thefts.
+* **Rate Limiting**: Protects backend APIs against brute-force attacks (`100` calls / IP / Hour).
+* **Data Sanitization**: Prevents SQL/NoSQL injection via `express-mongo-sanitize` and XSS scripts via `xss-clean`.
+
+---
+
+## 🧪 Dev Operations & Seed Data
+
+### Seeding database
+To populate MongoDB with starter tours, guides, and reviews:
 ```bash
-npm run start
-```
-
-4. Optional production-mode start (still via nodemon):
-
-```bash
-npm run start:prod
-```
-
-5. Frontend bundle watch:
-
-```bash
-npm run watch:js
-```
-
-## 8. API Features (Query Options)
-
-For list endpoints using `APIFeatures` (`handlerFactory.getAll`):
-
-- Filtering (including advanced operators `gte`, `gt`, `lte`, `lt`)
-- Sorting: `?sort=price,-ratingsAverage`
-- Field limiting: `?fields=name,price`
-- Pagination: `?page=2&limit=10`
-
-## 9. Authentication and Authorization
-
-### Auth Flow
-
-- Signup requires OTP verification:
-  - `POST /api/v1/users/send-otp`
-  - `POST /api/v1/users/signup` (with OTP)
-- Login:
-  - `POST /api/v1/users/login`
-- Logout:
-  - `GET /api/v1/users/logout`
-- Forgot/reset password:
-  - `POST /api/v1/users/forgotPassword`
-  - `PATCH /api/v1/users/resetPassword/:token`
-
-### Middleware Roles
-
-- `protect`: requires valid JWT (header or cookie)
-- `restrictTo(...roles)`: role-based permission check
-- Roles in schema: `user`, `guide`, `lead-guide`, `admin`
-
-## 10. Route Map
-
-### View Routes (`/`)
-
-- `GET /` overview page
-- `GET /tour/:slug` single tour page
-- `GET /login`, `GET /signup`
-- `GET /forgotPassword`, `GET /resetPassword/:token`
-- `GET /me` account page (protected)
-- `GET /my-tours` (protected)
-- `GET /my-reviews` (protected)
-- `GET /tour/:slug/review` (protected)
-- `POST /submit-user-data` (protected)
-
-### Tours API (`/api/v1/tours`)
-
-- `GET /top-5-cheap`
-- `GET /tour-stats`
-- `GET /monthly-plan/:year` (protected: admin/lead-guide/guide)
-- `GET /tours-within/:distance/center/:latlng/unit/:unit`
-- `GET /distances/:latlng/unit/:unit`
-- `GET /`
-- `POST /` (protected: admin/lead-guide)
-- `GET /:id`
-- `PATCH /:id` (protected: admin/lead-guide, supports image upload)
-- `DELETE /:id` (protected: admin/lead-guide)
-
-Nested reviews:
-
-- `GET /api/v1/tours/:tourId/reviews`
-- `POST /api/v1/tours/:tourId/reviews`
-
-### Users API (`/api/v1/users`)
-
-Public:
-
-- `POST /send-otp`
-- `POST /signup`
-- `POST /login`
-- `GET /logout`
-- `POST /forgotPassword`
-- `PATCH /resetPassword/:token`
-
-Protected:
-
-- `PATCH /updateMypassword`
-- `GET /me`
-- `PATCH /updateMe`
-- `DELETE /deleteMe`
-
-Admin-only:
-
-- `GET /`
-- `POST /`
-- `GET /:id`
-- `PATCH /:id`
-- `DELETE /:id`
-
-### Reviews API (`/api/v1/reviews`)
-
-All routes are protected.
-
-- `GET /`
-- `POST /` (role: user)
-- `GET /:id`
-- `PATCH /:id` (role: user/admin)
-- `DELETE /:id` (role: user/admin)
-
-### Bookings API (`/api/v1/bookings`)
-
-All routes are protected.
-
-- `GET /checkout-session/:tourId`
-- Admin/lead-guide only for CRUD:
-  - `GET /`
-  - `POST /`
-  - `GET /:id`
-  - `PATCH /:id`
-  - `DELETE /:id`
-
-## 11. Data Models
-
-### User
-
-- Fields: name, email, photo, role, password, passwordConfirm, passwordChangedAt, passwordResetToken, passwordResetExpires, active
-- Password is hashed with bcrypt pre-save
-- Inactive users filtered from queries via `pre(/^find/)`
-
-### Verify (OTP)
-
-- Fields: email, otp, createdAt
-- TTL index expiry after 600 seconds (10 minutes)
-
-### Tour
-
-- Core details: name, duration, maxGroupSize, difficulty, price, summary, description
-- Media: imageCover, images
-- Ratings: ratingsAverage, ratingsQuantity
-- Geospatial: startLocation + locations
-- Guides reference `User`
-- Virtual populate: `reviews`
-- Indexes: `{price:1, ratingsAverage:-1}`, `{slug:1}`, `{startLocation:'2dsphere'}`
-
-### Review
-
-- Fields: review, rating, tour ref, user ref
-- Unique index on `(tour, user)` to allow one review per user per tour
-- Post-save/update hooks recompute `Tour` rating aggregates
-
-### Booking
-
-- Fields: tour ref, user ref, price, createdAt, paid
-- Query middleware auto-populates `user` and `tour`
-
-## 12. Image Upload and Processing
-
-- Tour image updates:
-  - `uploadTourImages` with `imageCover` (1) and `images` (max 3)
-  - Sharp resizes to 2000x1333 and saves to `public/img/tours`
-- User photo updates:
-  - `uploadUserPhoto` (`photo` field)
-  - Sharp resizes to 500x500 and saves to `public/img/users`
-
-## 13. Email Templates and Notifications
-
-Pug templates in `views/email/`:
-
-- `welcome.pug`
-- `otp.pug`
-- `passwordReset.pug`
-- `bookingConfirmation.pug`
-- `baseEmail.pug` + `_style.pug`
-
-Triggered by:
-
-- Signup -> welcome email
-- Send OTP -> OTP email
-- Forgot password -> reset email
-- Booking completion flow -> booking confirmation email
-
-## 14. Payments (Stripe)
-
-- Backend creates checkout session: `GET /api/v1/bookings/checkout-session/:tourId`
-- Frontend uses Stripe `redirectToCheckout` in `public/js/stripe.js`
-- Success URL includes query params used by `createBookingCheckout` middleware to create booking
-
-## 15. Frontend JS Actions
-
-Entry: `public/js/index.js`
-
-- Login/logout
-- Signup + OTP send
-- Forgot/reset password
-- Update profile data + photo
-- Update password
-- Book tour with Stripe
-- Submit reviews
-- Render tour map from embedded locations dataset
-
-## 16. Seed Data Script
-
-File: `dev-data/data/import-dev-data.js`
-
-Import:
-
-```bash
+# Seed all database records
 node dev-data/data/import-dev-data.js --import
-```
 
-Delete:
-
-```bash
+# Delete all database records
 node dev-data/data/import-dev-data.js --delete
 ```
 
-## 17. Known Inconsistencies to Be Aware Of
-
-- User router path is `PATCH /updateMypassword` (lowercase `p` in `password`) while frontend code currently targets `api/v1/users/updateMyPassword` in `public/js/updateSettings.js`.
-- `npm run build:js` currently runs `parcel watch` (same as watch script), not a one-time production build.
-- `public/js/stripe.js` has a hardcoded publishable key.
-
-## 18. Troubleshooting
-
-### App starts but DB fails
-
-- Verify `DATABASE` format and `DATABASE_PASSWORD` value in `config.env`.
-
-### No emails are sent
-
-- In development: check `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USERNAME`, `EMAIL_PASSWORD`.
-- In production: check `BREVO_USERNAME`, `BREVO_PASSWORD`, `EMAIL_FROM`.
-
-### Auth not working in browser
-
-- Ensure cookies are enabled.
-- In production behind proxy, `app.enable('trust proxy')` is enabled when `NODE_ENV=production`.
-
-### Stripe checkout fails
-
-- Verify `STRIPE_SECRET_KEY`.
-- Ensure frontend Stripe key is valid for your Stripe account.
-
-## 19. Useful Commands
-
+### Local Development
 ```bash
-npm run start
-npm run debug
-npm run watch:js
-npm run build:js
+# Start backend API (localhost:3000)
+npm run dev
+
+# Start frontend client (localhost:5173)
+cd frontend && npm run dev
 ```
 
-## 20. Maintainer Notes
+---
 
-This guide reflects the current code in this repository and is intended as a complete onboarding reference for development, debugging, and extension of the Natours app.
+## 🛡️ License
+Distributed under the ISC License. Created as an advanced full-stack learning platform.
