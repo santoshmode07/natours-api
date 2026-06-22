@@ -71,12 +71,13 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   //1)Get the Currently booked tour
   const tour = await Tour.findById(req.params.tourId);
   const baseUrl = getBaseUrl(req);
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
   //2)Create checkout Session
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     // success_url: `${baseUrl}/my-tours?tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}`,
     success_url: `${baseUrl}/my-tours?session_id={CHECKOUT_SESSION_ID}&alert=booking`,
-    cancel_url: `${baseUrl}/tour/${tour.slug}`,
+    cancel_url: `${frontendUrl}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
     mode: 'payment',
@@ -236,7 +237,8 @@ exports.createBookingCheckoutFromSuccess = catchAsync(async (req, res, next) => 
     }
   }
   const alertQuery = alert === 'booking' ? '?alert=booking' : '';
-  return res.redirect(`/my-tours${alertQuery}`);
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  return res.redirect(`${frontendUrl}/my-tours${alertQuery}`);
 });
 
 exports.getMyBookings = catchAsync(async (req, res, next) => {
