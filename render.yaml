@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: natours-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 90d
+      - key: JWT_COOKIE_EXPIRES_IN
+        value: "90"
