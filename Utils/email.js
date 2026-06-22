@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+const axios = require('axios');
 const { convert } = require('html-to-text');
 
 module.exports = class Email {
@@ -7,35 +7,10 @@ module.exports = class Email {
     this.firstName = user.name.split(' ')[0];
     this.otp = user.otp || null;
     this.url = url;
-    this.from = `Santosh <${process.env.EMAIL_FROM}>`;
+    this.from = process.env.EMAIL_FROM || 'hello@natours.com';
   }
 
-  // Create SMTP transporter based on current NODE_ENV
-  newTransport() {
-    if (process.env.NODE_ENV === 'production') {
-      // Connect to SMTP Relay over secure SSL on port 465
-      return nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: 465,
-        secure: true, // SSL for port 465
-        auth: {
-          user: process.env.EMAIL_USERNAME,
-          pass: process.env.EMAIL_PASSWORD,
-        },
-      });
-    }
-    // Connect to Mailtrap SMTP in development
-    return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
-  }
-
-  // Returns raw HTML template strings instead of parsing Pug files
+  // Returns raw HTML template strings
   getHtmlContent(template, subject) {
     if (template === 'otp') {
       return `
@@ -107,22 +82,45 @@ module.exports = class Email {
     `;
   }
 
-  // Sends the email using nodemailer
+  // Sends the email using Brevo REST API (or logs in dev if no API key is configured)
   async send(template, subject) {
-    // 1) Render HTML directly using JS template strings
     const html = this.getHtmlContent(template, subject);
+    const apiKey = process.env.BREVO_API_KEY || process.env.BREVO_PASSWORD;
 
-    // 2) Define the email options
-    const mailOptions = {
-      from: this.from,
-      to: this.to,
-      subject: subject,
-      html: html,
-      text: convert(html), // Generate automatic plain text fallback
-    };
+    // Use console logging in development if no API Key is set
+    if (process.env.NODE_ENV !== 'production' && !apiKey) {
+      console.log('✉️ [DEV EMAIL LOG]');
+      console.log(`Recipient: ${this.to}`);
+      console.log(`Subject: ${subject}`);
+      console.log(`Plain Text: ${convert(html).substring(0, 150)}...`);
+      return;
+    }
 
-    // 3) Create a transporter and send email
-    await this.newTransport().sendMail(mailOptions);
+    if (!apiKey) {
+      throw new Error('Brevo API key is not configured in production settings (set BREVO_API_KEY).');
+    }
+
+    // Direct HTTP POST to Brevo API (ignores port blocking completely)
+    try {
+      await axios.post(
+        'https://api.brevo.com/v3/smtp/email',
+        {
+          sender: { name: 'Natours', email: this.from },
+          to: [{ email: this.to }],
+          subject: subject,
+          htmlContent: html,
+        },
+        {
+          headers: {
+            'api-key': apiKey,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    } catch (err) {
+      console.error('Brevo REST API Error:', err.response?.data || err.message);
+      throw new Error(`SMTP API Failure: ${err.message}`);
+    }
   }
 
   // Helper sugar methods
