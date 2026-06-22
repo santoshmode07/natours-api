@@ -35,7 +35,12 @@ const Signup = () => {
       });
 
       if (response.data.status === 'success') {
-        showAlert('success', 'Verification OTP sent to your email!');
+        if (response.data.devOtp) {
+          showAlert('info', `Mail server timed out. Using dev backup code: ${response.data.devOtp}`);
+          setOtp(response.data.devOtp);
+        } else {
+          showAlert('success', 'Verification OTP sent to your email!');
+        }
         setOtpSent(true);
       }
     } catch (err) {

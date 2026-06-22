@@ -131,15 +131,24 @@ exports.sendOTP = catchAsync(async (req, res, next) => {
     await Verify.deleteOne({ email: email });
     await Verify.create({ email: email, otp: otp });
     const url = `${req.protocol}://${req.get('host')}/api/v1/users/verifyEmail`;
+    let emailSent = true;
     try {
       await new Email({ email, otp, name }, url).sendOTP();
     } catch (mailErr) {
+      emailSent = false;
       console.warn('⚠️ OTP email delivery failed, but continuing for development:', mailErr.message);
     }
-    res.status(200).json({
+    
+    const responseData = {
       status: 'success',
-      message: 'OTP sent successfully',
-    });
+      message: emailSent ? 'OTP sent successfully' : 'OTP sent (using local dev backup)',
+    };
+
+    if (!emailSent) {
+      responseData.devOtp = otp;
+    }
+
+    res.status(200).json(responseData);
   } catch (err) {
     console.error('ERROR SENDING OTP 💥:', err);
     return next(
