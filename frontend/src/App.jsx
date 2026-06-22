@@ -14,6 +14,8 @@ import Signup from './pages/Signup';
 import Account from './pages/Account';
 import Bookings from './pages/Bookings';
 import MyReviews from './pages/MyReviews';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
@@ -33,6 +35,8 @@ const App = () => {
           <Route path="/tour/:slug" element={<TourDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           
           <Route 
             path="/me" 
