@@ -27,13 +27,16 @@ const isSecureRequest = (req) => {
   );
 };
 
-const getCookieOptions = (req, expires) => ({
-  ...(expires ? { expires } : {}),
-  httpOnly: true,
-  secure: isSecureRequest(req),
-  sameSite: 'lax',
-  path: '/',
-});
+const getCookieOptions = (req, expires) => {
+  const secure = isSecureRequest(req);
+  return {
+    ...(expires ? { expires } : {}),
+    httpOnly: true,
+    secure: secure,
+    sameSite: secure ? 'none' : 'lax',
+    path: '/',
+  };
+};
 
 const signToken = (id) =>
   jwt.sign({ id: id }, process.env.JWT_SECRET, {
